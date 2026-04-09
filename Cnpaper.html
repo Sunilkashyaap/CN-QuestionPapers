@@ -1,0 +1,2283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CN Practice Papers — Unit III & IV</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,wght@0,300;0,600;0,700;1,300&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+        :root {
+            --ink: #1a1612;
+            --paper: #f5f0e8;
+            --paper2: #ede7d9;
+            --rule: #c8bfad;
+            --accent: #b5451b;
+            --accent2: #1b5eb5;
+            --green: #1a6b3a;
+            --stamp: #8b1a1a;
+            --muted: #6b6156;
+            --correct-bg: #e8f5ee;
+            --correct-border: #1a6b3a;
+            --wrong-bg: #fdf0ee;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #d4cfc6;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink);
+            min-height: 100vh;
+            padding: 0 0 60px;
+        }
+
+        /* ── TOP CONTROLS ── */
+        .controls-bar {
+            background: var(--ink);
+            padding: 14px 40px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+        }
+
+        .controls-bar h1 {
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--paper);
+            font-size: 13px;
+            letter-spacing: 1px;
+            flex: 1;
+        }
+
+        .set-btn {
+            padding: 7px 18px;
+            border: 1px solid #444;
+            background: transparent;
+            color: #aaa;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .set-btn.active,
+        .set-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .show-ans-btn {
+            padding: 7px 18px;
+            background: var(--accent2);
+            color: white;
+            border: none;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .score-display {
+            font-family: 'IBM Plex Mono', monospace;
+            color: #aaa;
+            font-size: 11px;
+            padding: 7px 14px;
+            border: 1px solid #444;
+            border-radius: 4px;
+        }
+
+        /* ── PAPER ── */
+        .paper-wrap {
+            max-width: 860px;
+            margin: 32px auto;
+            background: var(--paper);
+            box-shadow: 0 4px 40px rgba(0, 0, 0, 0.25), 4px 4px 0 #b0a898;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        /* ── HEADER ── */
+        .paper-header {
+            background: var(--paper2);
+            border-bottom: 2px solid var(--rule);
+            padding: 28px 48px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .paper-header::before {
+            content: '';
+            display: block;
+            height: 4px;
+            background: repeating-linear-gradient(90deg, var(--accent) 0, var(--accent) 16px, transparent 16px, transparent 24px);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .uni-name {
+            font-family: 'Fraunces', serif;
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .exam-title {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 14px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px 24px;
+            font-size: 12px;
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto 10px;
+        }
+
+        .meta-item {
+            display: flex;
+            gap: 6px;
+        }
+
+        .meta-label {
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .meta-val {
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .set-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            padding: 4px 18px;
+            border-radius: 2px;
+            letter-spacing: 2px;
+            margin-top: 8px;
+        }
+
+        .instructions {
+            background: white;
+            border: 1px solid var(--rule);
+            border-radius: 3px;
+            padding: 10px 16px;
+            margin: 14px 0 0;
+            font-size: 12px;
+            color: var(--muted);
+            text-align: left;
+            line-height: 1.7;
+        }
+
+        .instructions strong {
+            color: var(--ink);
+        }
+
+        /* ── ROLL NO BOX ── */
+        .roll-row {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px 48px 0;
+            gap: 8px;
+            align-items: center;
+            font-size: 12px;
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--muted);
+        }
+
+        .roll-boxes {
+            display: flex;
+            gap: 2px;
+        }
+
+        .roll-box {
+            width: 22px;
+            height: 22px;
+            border: 1px solid var(--rule);
+            background: white;
+        }
+
+        /* ── QUESTION PAPER ── */
+        .paper-body {
+            padding: 24px 48px 40px;
+        }
+
+        .section-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: rgba(181, 69, 27, 0.08);
+            border-left: 3px solid var(--accent);
+            padding: 5px 12px;
+            margin: 24px 0 16px;
+        }
+
+        /* ── Q TABLE ── */
+        .q-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .q-table th {
+            background: var(--ink);
+            color: var(--paper);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 1px;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .q-table th:last-child,
+        .q-table th:nth-last-child(2) {
+            text-align: center;
+            width: 52px;
+        }
+
+        .q-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--rule);
+            vertical-align: top;
+            font-size: 13.5px;
+            line-height: 1.6;
+        }
+
+        .q-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .q-num {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            text-align: center;
+            width: 36px;
+        }
+
+        .q-marks {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            text-align: center;
+            color: var(--accent);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .q-co {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        /* ── MCQ OPTIONS ── */
+        .mcq-text {
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .opt {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            background: white;
+            border: 1px solid var(--rule);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 13px;
+            user-select: none;
+        }
+
+        .opt:hover {
+            border-color: var(--accent2);
+            background: #f0f4ff;
+        }
+
+        .opt.selected {
+            border-color: var(--accent2);
+            background: #e8effc;
+        }
+
+        .opt.correct {
+            border-color: var(--correct-border);
+            background: var(--correct-bg);
+        }
+
+        .opt.wrong {
+            border-color: #c0392b;
+            background: var(--wrong-bg);
+        }
+
+        .opt-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            min-width: 16px;
+        }
+
+        .opt.correct .opt-label {
+            color: var(--green);
+        }
+
+        .opt.wrong .opt-label {
+            color: #c0392b;
+        }
+
+        /* ── ANSWER REVEAL ── */
+        .ans-reveal {
+            display: none;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: #e8f5ee;
+            border-left: 3px solid var(--green);
+            border-radius: 0 4px 4px 0;
+            font-size: 12.5px;
+            color: var(--green);
+            font-weight: 500;
+        }
+
+        .ans-reveal.show {
+            display: block;
+        }
+
+        /* ── SCENARIO ── */
+        .scenario-section {
+            margin-top: 28px;
+        }
+
+        .scenario-block {
+            border: 1.5px solid var(--rule);
+            border-radius: 4px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .scenario-header {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 10px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .scenario-header .scode {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .scenario-header .smarks {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: #ffd700;
+        }
+
+        .scenario-title {
+            font-family: 'Fraunces', serif;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 12px 18px 8px;
+            color: var(--accent);
+            border-bottom: 1px dashed var(--rule);
+            background: var(--paper2);
+        }
+
+        .scenario-context {
+            padding: 14px 18px;
+            font-size: 13.5px;
+            line-height: 1.75;
+            background: white;
+            border-bottom: 1px solid var(--rule);
+            font-style: italic;
+            color: #3a342e;
+        }
+
+        .scenario-qs {
+            padding: 14px 18px;
+        }
+
+        .scenario-qs ol {
+            padding-left: 20px;
+        }
+
+        .scenario-qs li {
+            font-size: 13.5px;
+            margin-bottom: 8px;
+            line-height: 1.6;
+            padding-left: 4px;
+        }
+
+        .scenario-qs li strong {
+            color: var(--accent2);
+        }
+
+        /* ── ANSWER SECTION ── */
+        .ans-section {
+            background: #f0efe8;
+            border-top: 2px dashed var(--rule);
+            padding: 14px 18px;
+            display: none;
+        }
+
+        .ans-section.show {
+            display: block;
+        }
+
+        .ans-section h4 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--green);
+            margin-bottom: 10px;
+        }
+
+        .ans-section ol {
+            padding-left: 18px;
+        }
+
+        .ans-section li {
+            font-size: 13px;
+            margin-bottom: 8px;
+            line-height: 1.6;
+            color: #1a3a1a;
+        }
+
+        .ans-section li strong {
+            color: var(--ink);
+        }
+
+        /* ── TOGGLE ANS BTN ── */
+        .toggle-ans-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            border-top: 1px dashed var(--rule);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: var(--muted);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .toggle-ans-btn:hover {
+            background: var(--paper2);
+            color: var(--accent);
+        }
+
+        /* ── PAGE FOOTER ── */
+        .paper-footer {
+            border-top: 2px solid var(--rule);
+            padding: 12px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        /* ── SET VISIBILITY ── */
+        .paper-set {
+            display: none;
+        }
+
+        .paper-set.active {
+            display: block;
+        }
+
+        /* ── SCORE CARD ── */
+        .score-card {
+            background: var(--ink);
+            color: var(--paper);
+            text-align: center;
+            padding: 20px;
+            margin: 16px 48px;
+            border-radius: 4px;
+            font-family: 'IBM Plex Mono', monospace;
+            display: none;
+        }
+
+        .score-card.show {
+            display: block;
+        }
+
+        .score-num {
+            font-size: 36px;
+            font-weight: 600;
+            color: #ffd700;
+        }
+
+        .score-sub {
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: #aaa;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="controls-bar">
+        <h1>📋 CN PRACTICE PAPERS — Unit III & IV</h1>
+        <button class="set-btn active" onclick="showSet(1)">SET A</button>
+        <button class="set-btn" onclick="showSet(2)">SET B</button>
+        <button class="set-btn" onclick="showSet(3)">SET C</button>
+        <button class="set-btn" onclick="showSet(4)">SET D</button>
+        <button class="show-ans-btn" onclick="toggleAllAnswers()">Show All Answers</button>
+        <div class="score-display" id="scoreDisplay">MCQ: 0/10</div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--                        SET A                              -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div class="paper-set active" id="set1">
+        <div class="paper-wrap">
+
+            <div class="roll-row">Roll No.: <div class="roll-boxes">
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                </div>
+            </div>
+
+            <div class="paper-header">
+                <div class="uni-name">MIT School of Computing · MIT-ADT University, Pune</div>
+                <div class="exam-title">Term Assessment – II Examination April-2026</div>
+                <div class="meta-grid">
+                    <div class="meta-item"><span class="meta-label">Programme:</span><span
+                            class="meta-val">B.Tech</span></div>
+                    <div class="meta-item"><span class="meta-label">Year:</span><span class="meta-val">Second
+                            Year</span></div>
+                    <div class="meta-item"><span class="meta-label">Academic Year:</span><span
+                            class="meta-val">2025-26</span></div>
+                    <div class="meta-item"><span class="meta-label">Branch:</span><span class="meta-val">CSE</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Semester:</span><span class="meta-val">IV</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Max. Marks:</span><span class="meta-val">20</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Subject:</span><span class="meta-val">Computer
+                            Networks</span></div>
+                    <div class="meta-item"><span class="meta-label">Code:</span><span class="meta-val">23CSE2011</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Time:</span><span class="meta-val">01:30–2:30
+                            pm</span></div>
+                </div>
+                <div class="set-badge">SET A</div>
+                <div class="instructions"><strong>Instructions:</strong> All questions are compulsory. Neat diagrams
+                    must be drawn wherever necessary. Figures to the right indicate marks allotted.</div>
+            </div>
+
+            <div class="paper-body">
+                <div class="section-label">Q1 — Multiple Choice Questions (1 Mark Each)</div>
+
+                <table class="q-table">
+                    <thead>
+                        <tr>
+                            <th>Q</th>
+                            <th>Question</th>
+                            <th>Marks</th>
+                            <th>CO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <!-- Q1 -->
+                        <tr>
+                            <td class="q-num">1</td>
+                            <td>
+                                <div class="mcq-text">Which of the following IPv4 address classes supports the largest
+                                    number of hosts per network?</div>
+                                <div class="options" data-correct="A">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> Class A
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> Class B
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> Class C
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> Class D
+                                    </div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: A — Class A has 24 host bits → 2²⁴ − 2 = 16,777,214
+                                    hosts per network.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <!-- Q2 -->
+                        <tr>
+                            <td class="q-num">2</td>
+                            <td>
+                                <div class="mcq-text">In subnetting 192.168.1.0/26, how many usable hosts are available
+                                    per subnet?</div>
+                                <div class="options" data-correct="B">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> 30
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> 62
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> 126
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> 254
+                                    </div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: B — /26 leaves 6 host bits → 2⁶ − 2 = 62 usable hosts.
+                                </div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <!-- Q3 -->
+                        <tr>
+                            <td class="q-num">3</td>
+                            <td>
+                                <div class="mcq-text">Which IP address is used by a host when it does not know its own
+                                    IP address (e.g., during DHCP discovery)?</div>
+                                <div class="options" data-correct="C">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span>
+                                        255.255.255.255</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span>
+                                        127.0.0.1</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> 0.0.0.0
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span>
+                                        192.168.0.1</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: C — 0.0.0.0 is the "this host on this network" special
+                                    address used as source when IP is unknown.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <!-- Q4 -->
+                        <tr>
+                            <td class="q-num">4</td>
+                            <td>
+                                <div class="mcq-text">OSPF sends LSA (Link State Advertisements) to which destination
+                                    address by default?</div>
+                                <div class="options" data-correct="D">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span>
+                                        255.255.255.255</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span>
+                                        224.0.0.9</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span>
+                                        224.0.0.10</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span>
+                                        224.0.0.5</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: D — OSPF uses 224.0.0.5 (ALLSPFRouters). 224.0.0.9 is
+                                    RIPv2, 224.0.0.10 is EIGRP.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <!-- Q5 -->
+                        <tr>
+                            <td class="q-num">5</td>
+                            <td>
+                                <div class="mcq-text">What is the maximum hop count allowed in RIP before a route is
+                                    considered unreachable?</div>
+                                <div class="options" data-correct="B">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> 10
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> 15
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> 16
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> 255
+                                    </div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: B — RIP max hop count is 15. A hop count of 16 means
+                                    infinity (unreachable).</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <!-- Q6 -->
+                        <tr>
+                            <td class="q-num">6</td>
+                            <td>
+                                <div class="mcq-text">Which field in the TCP header is used to implement flow control?
+                                </div>
+                                <div class="options" data-correct="C">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span>
+                                        Sequence Number</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span>
+                                        Checksum</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> Window
+                                        Size</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> Urgent
+                                        Pointer</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: C — Window Size tells the sender how much buffer space
+                                    the receiver has. This is the flow control mechanism.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                        <!-- Q7 -->
+                        <tr>
+                            <td class="q-num">7</td>
+                            <td>
+                                <div class="mcq-text">Which protocol operates at both the Transport and Network layers
+                                    to report errors back to the source?</div>
+                                <div class="options" data-correct="A">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> ICMP
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> ARP
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> DHCP
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> RARP
+                                    </div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: A — ICMP is encapsulated in IP datagrams and reports
+                                    errors (TTL expired, unreachable) back to the source.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <!-- Q8 -->
+                        <tr>
+                            <td class="q-num">8</td>
+                            <td>
+                                <div class="mcq-text">In TCP's 3-way handshake, what does the client send first?</div>
+                                <div class="options" data-correct="B">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> ACK
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> SYN
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> SYN-ACK
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> FIN
+                                    </div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: B — Client sends SYN (with its initial sequence
+                                    number). Server responds with SYN-ACK. Client completes with ACK.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                        <!-- Q9 -->
+                        <tr>
+                            <td class="q-num">9</td>
+                            <td>
+                                <div class="mcq-text">Which of the following is the correct sequence for DHCP operation?
+                                </div>
+                                <div class="options" data-correct="D">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> Offer →
+                                        Discover → Request → Acknowledge</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> Request
+                                        → Discover → Offer → Acknowledge</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span>
+                                        Discover → Request → Offer → Acknowledge</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span>
+                                        Discover → Offer → Request → Acknowledge</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: D — DORA: Discover → Offer → Request → Acknowledge.
+                                    Client broadcasts Discover, server Offers, client Requests, server Acknowledges.
+                                </div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <!-- Q10 -->
+                        <tr>
+                            <td class="q-num">10</td>
+                            <td>
+                                <div class="mcq-text">Which TCP timer prevents a connection from remaining idle for too
+                                    long by sending probe segments?</div>
+                                <div class="options" data-correct="C">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span>
+                                        Retransmission Timer</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span>
+                                        Time-Wait Timer</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span>
+                                        Keep-Alive Timer</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span>
+                                        Persistent Timer</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: C — Keep-Alive Timer (2 hours). Sends 10 probe
+                                    segments at 75-sec intervals if no activity detected.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <!-- SCENARIO SECTION -->
+                <div class="section-label">Q2 — Scenario Based Questions (5 Marks Each) — Attempt Any TWO</div>
+
+                <div class="scenario-block">
+                    <div class="scenario-header">
+                        <span class="scode">Q2-A · Scenario: IPv4 Fragmentation + TTL + Routing</span>
+                        <span class="smarks">5 M | CO3</span>
+                    </div>
+                    <div class="scenario-title">🌐 Packet's Journey Across the Internet</div>
+                    <div class="scenario-context">
+                        A computer in Mumbai sends a large IP datagram of 4000 bytes to a server in Delhi. The packet
+                        passes through three routers. The first router connects to an Ethernet network with MTU 1500
+                        bytes. Each router decrements the TTL. The initial TTL is set to 5.
+                    </div>
+                    <div class="scenario-qs">
+                        <ol>
+                            <li>What happens when the 4000-byte datagram reaches the first router with MTU 1500 bytes?
+                                Explain <strong>fragmentation</strong> with fragment sizes.</li>
+                            <li>What is the purpose of the <strong>TTL field</strong> and what happens when it reaches
+                                zero?</li>
+                            <li>Which protocol does the router use to send an error back to the source when TTL expires?
+                            </li>
+                            <li>At which device is the fragmented datagram <strong>reassembled</strong>?</li>
+                            <li>If the packet uses <strong>OSPF</strong> for routing, how does the router determine the
+                                best path?</li>
+                        </ol>
+                    </div>
+                    <button class="toggle-ans-btn" onclick="toggleAns(this)">▼ Show Model Answers</button>
+                    <div class="ans-section">
+                        <h4>✓ Model Answers</h4>
+                        <ol>
+                            <li><strong>Fragmentation:</strong> Since MTU = 1500 bytes and IP header = 20 bytes, each
+                                fragment can carry 1480 bytes of data. A 4000-byte datagram (with 20-byte header = 3980
+                                bytes data) is split into 3 fragments: Fragment 1 = 1500 bytes (offset 0, MF=1),
+                                Fragment 2 = 1500 bytes (offset 185, MF=1), Fragment 3 = 1040 bytes (offset 370, MF=0).
+                                All fragments share the same Identifier field.</li>
+                            <li><strong>TTL:</strong> TTL (Time To Live) is decremented by 1 at each router. It prevents
+                                packets from circulating forever in routing loops. When TTL = 0, the router discards the
+                                packet.</li>
+                            <li>When TTL expires, the router sends an <strong>ICMP Time Exceeded</strong> (Type 11)
+                                message back to the source IP address.</li>
+                            <li>Reassembly occurs <strong>only at the final destination host</strong>, not at
+                                intermediate routers. The destination buffers all fragments and uses the Identifier +
+                                Fragment Offset + MF flag to reconstruct the original datagram.</li>
+                            <li>OSPF routers use the <strong>Dijkstra's Shortest Path First (SPF) algorithm</strong>.
+                                Each router has a complete link-state database of the topology. It builds a
+                                shortest-path tree with itself as root and installs the best routes into the routing
+                                table. Metric = cost (based on bandwidth).</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="scenario-block">
+                    <div class="scenario-header">
+                        <span class="scode">Q2-B · Scenario: UDP vs TCP + Sockets</span>
+                        <span class="smarks">5 M | CO4</span>
+                    </div>
+                    <div class="scenario-title">🎮 Online Gaming Server</div>
+                    <div class="scenario-context">
+                        An online multiplayer game server needs to send real-time position updates to 500 players every
+                        50ms. At the same time, it handles in-game purchases that must be 100% reliable. The game
+                        developer must decide which transport protocol to use for each use case.
+                    </div>
+                    <div class="scenario-qs">
+                        <ol>
+                            <li>Which protocol — TCP or UDP — should be used for <strong>real-time position
+                                    updates</strong>? Justify with reasons.</li>
+                            <li>Which protocol should handle <strong>in-game purchases</strong>? Why?</li>
+                            <li>Explain how a <strong>UDP socket</strong> sends data (steps in the process).</li>
+                            <li>What is the purpose of a <strong>port number</strong> in this context?</li>
+                            <li>Which <strong>UDP header field</strong> detects corruption in position update packets?
+                            </li>
+                        </ol>
+                    </div>
+                    <button class="toggle-ans-btn" onclick="toggleAns(this)">▼ Show Model Answers</button>
+                    <div class="ans-section">
+                        <h4>✓ Model Answers</h4>
+                        <ol>
+                            <li><strong>UDP for position updates.</strong> Reasons: (1) Real-time — even a 50ms
+                                retransmission delay is unacceptable in fast games. (2) A slightly outdated position is
+                                better than a delayed one. (3) UDP has no connection overhead, lower latency. (4) The
+                                next update will correct any missed position anyway.</li>
+                            <li><strong>TCP for purchases.</strong> Reasons: (1) Money transactions must arrive reliably
+                                — no lost packets acceptable. (2) TCP guarantees in-order, error-free delivery via
+                                sequence numbers and ACKs. (3) TCP's reliability mechanisms (retransmission, checksums)
+                                ensure transaction integrity.</li>
+                            <li><strong>UDP socket steps:</strong> (1) Create socket:
+                                <code>socket(AF_INET, SOCK_DGRAM)</code>. (2) Fill destination address and port. (3)
+                                Send using <code>sendto()</code> — no connection needed. (4) Wait for reply with
+                                <code>recvfrom()</code>. (5) Close socket. No handshake, no connection state.</li>
+                            <li>A port number identifies which <strong>specific application/process</strong> on the host
+                                should receive the datagram. E.g., game server listens on port 27015, purchase service
+                                on port 443. Without ports, the OS wouldn't know which running application to deliver
+                                the packet to.</li>
+                            <li>The <strong>Checksum field</strong> (16 bits) in the UDP header detects corruption. It
+                                is computed over the header + data. If the checksum at receiver doesn't match, the
+                                packet is discarded.</li>
+                        </ol>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="score-card" id="scoreCard1"></div>
+
+            <div class="paper-footer">
+                <span>23CSE2011 · Computer Networks · SET A</span>
+                <span>Page 1 of 1</span>
+                <span>★ ★ ★ ★ ★</span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--                        SET B                              -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div class="paper-set" id="set2">
+        <div class="paper-wrap">
+
+            <div class="roll-row">Roll No.: <div class="roll-boxes">
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                </div>
+            </div>
+
+            <div class="paper-header">
+                <div class="uni-name">MIT School of Computing · MIT-ADT University, Pune</div>
+                <div class="exam-title">Term Assessment – II Examination April-2026</div>
+                <div class="meta-grid">
+                    <div class="meta-item"><span class="meta-label">Programme:</span><span
+                            class="meta-val">B.Tech</span></div>
+                    <div class="meta-item"><span class="meta-label">Year:</span><span class="meta-val">Second
+                            Year</span></div>
+                    <div class="meta-item"><span class="meta-label">Academic Year:</span><span
+                            class="meta-val">2025-26</span></div>
+                    <div class="meta-item"><span class="meta-label">Branch:</span><span class="meta-val">CSE</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Semester:</span><span class="meta-val">IV</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Max. Marks:</span><span class="meta-val">20</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Subject:</span><span class="meta-val">Computer
+                            Networks</span></div>
+                    <div class="meta-item"><span class="meta-label">Code:</span><span class="meta-val">23CSE2011</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Time:</span><span class="meta-val">01:30–2:30
+                            pm</span></div>
+                </div>
+                <div class="set-badge">SET B</div>
+                <div class="instructions"><strong>Instructions:</strong> All questions are compulsory. Neat diagrams
+                    must be drawn wherever necessary. Figures to the right indicate marks allotted.</div>
+            </div>
+
+            <div class="paper-body">
+                <div class="section-label">Q1 — Multiple Choice Questions (1 Mark Each)</div>
+
+                <table class="q-table">
+                    <thead>
+                        <tr>
+                            <th>Q</th>
+                            <th>Question</th>
+                            <th>Marks</th>
+                            <th>CO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="q-num">1</td>
+                            <td>
+                                <div class="mcq-text">Which private IP address range belongs to Class B (RFC 1918)?
+                                </div>
+                                <div class="options" data-correct="C">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span>
+                                        10.0.0.0 – 10.255.255.255</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span>
+                                        192.168.0.0 – 192.168.255.255</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span>
+                                        172.16.0.0 – 172.31.255.255</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span>
+                                        127.0.0.0 – 127.255.255.255</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: C — 172.16.0.0/12 is the Class B private range. 10.x
+                                    is Class A private. 192.168.x is Class C private.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">2</td>
+                            <td>
+                                <div class="mcq-text">What does the "DF" flag in the IPv4 header mean?</div>
+                                <div class="options" data-correct="B">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> Data
+                                        Follows</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> Don't
+                                        Fragment</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> Delayed
+                                        Forwarding</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> Direct
+                                        Forwarding</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: B — DF = Don't Fragment. If set and packet is too
+                                    large for MTU, the router drops it and sends an ICMP error back.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">3</td>
+                            <td>
+                                <div class="mcq-text">Which routing protocol uses the DUAL (Diffusing Update Algorithm)?
+                                </div>
+                                <div class="options" data-correct="D">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> RIP
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> OSPF
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> BGP
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> EIGRP
+                                    </div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: D — EIGRP uses the DUAL algorithm to guarantee
+                                    loop-free fast convergence and pre-compute backup (Feasible Successor) routes.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">4</td>
+                            <td>
+                                <div class="mcq-text">In CIDR notation, 192.168.10.0/28 allows how many usable hosts?
+                                </div>
+                                <div class="options" data-correct="A">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> 14
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> 16
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> 30
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> 32
+                                    </div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: A — /28 means 4 host bits → 2⁴ − 2 = 14 usable hosts.
+                                </div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">5</td>
+                            <td>
+                                <div class="mcq-text">NAT translation table maps which combination?</div>
+                                <div class="options" data-correct="C">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> IP
+                                        address to MAC address</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> Domain
+                                        name to IP address</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> Private
+                                        IP:Port to Public IP:Port</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> IPv4
+                                        address to IPv6 address</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: C — NAT (PAT) maps Private IP:Port ↔ Public IP:Port to
+                                    allow multiple devices to share one public IP.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">6</td>
+                            <td>
+                                <div class="mcq-text">Go-Back-N ARQ retransmits which frames when an error is detected?
+                                </div>
+                                <div class="options" data-correct="D">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> Only
+                                        the damaged frame</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> All
+                                        frames from the beginning</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> The
+                                        frame before the error</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> The
+                                        damaged frame and all subsequent frames</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: D — Go-Back-N retransmits the erroneous frame AND all
+                                    frames sent after it. Selective Repeat only retransmits the specific bad frame.
+                                </div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">7</td>
+                            <td>
+                                <div class="mcq-text">Which TCP option allows the receiver to acknowledge non-contiguous
+                                    data blocks?</div>
+                                <div class="options" data-correct="B">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> MSS
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> SACK
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> Window
+                                        Scaling</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span>
+                                        Timestamps</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: B — SACK (Selective Acknowledgment) lets the receiver
+                                    tell the sender exactly which segments arrived, so only missing ones are
+                                    retransmitted.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">8</td>
+                            <td>
+                                <div class="mcq-text">During TCP's Slow Start, what happens to the congestion window
+                                    (CWND) for each ACK received?</div>
+                                <div class="options" data-correct="A">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> Doubles
+                                        (exponential growth)</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span>
+                                        Increases by 1 MSS linearly</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> Stays
+                                        constant</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> Halves
+                                    </div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: A — In Slow Start, CWND doubles per RTT (exponential).
+                                    It switches to linear growth (Congestion Avoidance) after reaching ssthresh.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">9</td>
+                            <td>
+                                <div class="mcq-text">Token Bucket algorithm differs from Leaky Bucket because it:</div>
+                                <div class="options" data-correct="B">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> Always
+                                        outputs at a fixed rate</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> Allows
+                                        controlled bursts of traffic</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> Drops
+                                        packets when the network is congested</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span>
+                                        Operates at the application layer</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: B — Token Bucket allows bursts as long as tokens are
+                                    available. Leaky Bucket always outputs at a fixed rate regardless of input bursts.
+                                </div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">10</td>
+                            <td>
+                                <div class="mcq-text">How many steps are required to terminate a TCP connection?</div>
+                                <div class="options" data-correct="C">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> 2 (FIN
+                                        + ACK)</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> 3 (same
+                                        as connection setup)</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> 4 (FIN,
+                                        ACK, FIN, ACK)</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> 6 (same
+                                        as full handshake)</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: C — TCP uses a 4-way FIN handshake because each
+                                    direction of the full-duplex connection must be closed independently: FIN → ACK →
+                                    FIN → ACK.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="section-label">Q2 — Scenario Based Questions (5 Marks Each)</div>
+
+                <div class="scenario-block">
+                    <div class="scenario-header">
+                        <span class="scode">Q2-A · Scenario: Subnetting + NAT + ARP</span>
+                        <span class="smarks">5 M | CO3</span>
+                    </div>
+                    <div class="scenario-title">🏢 Corporate Office Network</div>
+                    <div class="scenario-context">
+                        A company has one public IP address 203.0.113.10 from its ISP. Internally, it uses the address
+                        block 192.168.0.0/24 and must divide it into 4 equal subnets for 4 departments: HR, Finance, IT,
+                        and Operations. All departments share the one public IP to access the Internet.
+                    </div>
+                    <div class="scenario-qs">
+                        <ol>
+                            <li>Subnet 192.168.0.0/24 into 4 equal parts. Write the <strong>subnet address, mask, and
+                                    host range</strong> for each.</li>
+                            <li>How does <strong>NAT/PAT</strong> allow all 4 departments to use one public IP? Explain
+                                with an example.</li>
+                            <li>When a PC in HR (192.168.0.5) wants to send a packet to 192.168.1.10 (IT subnet), what
+                                role does <strong>ARP</strong> play?</li>
+                            <li>What is the difference between a <strong>network address</strong> and a
+                                <strong>broadcast address</strong>?</li>
+                            <li>If the HR subnet is 192.168.0.0/26, what is its broadcast address?</li>
+                        </ol>
+                    </div>
+                    <button class="toggle-ans-btn" onclick="toggleAns(this)">▼ Show Model Answers</button>
+                    <div class="ans-section">
+                        <h4>✓ Model Answers</h4>
+                        <ol>
+                            <li><strong>Subnetting /24 into 4:</strong> Borrow 2 bits → /26. Block size = 64.<br>
+                                • Subnet 1 (HR): 192.168.0.0/26, hosts 192.168.0.1–.62, broadcast .63<br>
+                                • Subnet 2 (Finance): 192.168.0.64/26, hosts .65–.126, broadcast .127<br>
+                                • Subnet 3 (IT): 192.168.0.128/26, hosts .129–.190, broadcast .191<br>
+                                • Subnet 4 (Ops): 192.168.0.192/26, hosts .193–.254, broadcast .255</li>
+                            <li><strong>NAT/PAT:</strong> The border router maintains a translation table. When
+                                192.168.0.5:3000 sends to google.com, the router rewrites source to 203.0.113.10:50001
+                                and records the mapping. When the reply comes to 50001, it is translated back and
+                                forwarded to 192.168.0.5:3000. Each department device gets a unique port number on the
+                                public IP.</li>
+                            <li><strong>ARP role:</strong> 192.168.0.5 and 192.168.1.10 are on different subnets. So ARP
+                                is used to find the <strong>router's MAC address</strong> (default gateway), not the
+                                destination directly. The packet is sent to the router at Layer 2, which then routes it
+                                to the IT subnet.</li>
+                            <li><strong>Network address:</strong> All host bits = 0. Identifies the subnet itself (e.g.,
+                                192.168.0.0). Cannot be assigned to a host. <strong>Broadcast address:</strong> All host
+                                bits = 1 (e.g., 192.168.0.63 for /26). Sends to all hosts in that subnet. Also cannot be
+                                assigned to a host.</li>
+                            <li>Broadcast of 192.168.0.0/26 = 192.168.0.0 + 63 = <strong>192.168.0.63</strong></li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="scenario-block">
+                    <div class="scenario-header">
+                        <span class="scode">Q2-B · Scenario: TCP Congestion + Timers</span>
+                        <span class="smarks">5 M | CO4</span>
+                    </div>
+                    <div class="scenario-title">📡 File Transfer During Network Congestion</div>
+                    <div class="scenario-context">
+                        A user downloads a large file over TCP. Initially the network is fast, but midway through, the
+                        network becomes congested — several packets are lost. TCP detects this via a retransmission
+                        timeout and adjusts its behavior accordingly.
+                    </div>
+                    <div class="scenario-qs">
+                        <ol>
+                            <li>Describe <strong>TCP's Slow Start</strong> phase. How does CWND grow?</li>
+                            <li>What happens to CWND and ssthresh when a <strong>timeout</strong> is detected?</li>
+                            <li>Which TCP timer detects that a packet has been lost and triggers retransmission?</li>
+                            <li>Explain the difference between <strong>Leaky Bucket</strong> and <strong>Token
+                                    Bucket</strong> in controlling the download traffic.</li>
+                            <li>After timeout, TCP enters Slow Start again. When does it switch to <strong>Congestion
+                                    Avoidance</strong>?</li>
+                        </ol>
+                    </div>
+                    <button class="toggle-ans-btn" onclick="toggleAns(this)">▼ Show Model Answers</button>
+                    <div class="ans-section">
+                        <h4>✓ Model Answers</h4>
+                        <ol>
+                            <li><strong>Slow Start:</strong> TCP starts with CWND = 1 MSS. For each ACK received, CWND
+                                increases by 1 MSS → so CWND doubles each RTT (exponential: 1→2→4→8...). This continues
+                                until CWND reaches ssthresh (slow start threshold).</li>
+                            <li><strong>On Timeout:</strong> ssthresh is set to half of current CWND. CWND is reset to 1
+                                MSS. TCP re-enters Slow Start from scratch.</li>
+                            <li>The <strong>Retransmission Timer</strong> (also called Timeout Timer). It starts when a
+                                segment is sent. If no ACK arrives before it expires, the segment is assumed lost and
+                                retransmitted. The timer value is dynamic, based on RTT estimates.</li>
+                            <li><strong>Leaky Bucket:</strong> Outputs traffic at a constant, fixed rate regardless of
+                                input — smooths all bursts. Good for strict rate enforcement. <strong>Token
+                                    Bucket:</strong> Tokens accumulate at a fixed rate; packets consume tokens. Allows
+                                bursts up to the bucket size. More flexible — useful when occasional fast bursts are
+                                acceptable but average rate is controlled.</li>
+                            <li>After Slow Start, TCP switches to <strong>Congestion Avoidance</strong> when CWND ≥
+                                ssthresh. In Congestion Avoidance, CWND grows linearly by 1 MSS per RTT (instead of
+                                doubling), carefully probing for more bandwidth without causing another congestion
+                                event.</li>
+                        </ol>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="score-card" id="scoreCard2"></div>
+
+            <div class="paper-footer">
+                <span>23CSE2011 · Computer Networks · SET B</span>
+                <span>Page 1 of 1</span>
+                <span>★ ★ ★ ★ ★</span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--                        SET C                              -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div class="paper-set" id="set3">
+        <div class="paper-wrap">
+
+            <div class="roll-row">Roll No.: <div class="roll-boxes">
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                </div>
+            </div>
+
+            <div class="paper-header">
+                <div class="uni-name">MIT School of Computing · MIT-ADT University, Pune</div>
+                <div class="exam-title">Term Assessment – II Examination April-2026</div>
+                <div class="meta-grid">
+                    <div class="meta-item"><span class="meta-label">Programme:</span><span
+                            class="meta-val">B.Tech</span></div>
+                    <div class="meta-item"><span class="meta-label">Year:</span><span class="meta-val">Second
+                            Year</span></div>
+                    <div class="meta-item"><span class="meta-label">Academic Year:</span><span
+                            class="meta-val">2025-26</span></div>
+                    <div class="meta-item"><span class="meta-label">Branch:</span><span class="meta-val">CSE</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Semester:</span><span class="meta-val">IV</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Max. Marks:</span><span class="meta-val">20</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Subject:</span><span class="meta-val">Computer
+                            Networks</span></div>
+                    <div class="meta-item"><span class="meta-label">Code:</span><span class="meta-val">23CSE2011</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Time:</span><span class="meta-val">01:30–2:30
+                            pm</span></div>
+                </div>
+                <div class="set-badge">SET C</div>
+                <div class="instructions"><strong>Instructions:</strong> All questions are compulsory. Neat diagrams
+                    must be drawn wherever necessary. Figures to the right indicate marks allotted.</div>
+            </div>
+
+            <div class="paper-body">
+                <div class="section-label">Q1 — Multiple Choice Questions (1 Mark Each)</div>
+
+                <table class="q-table">
+                    <thead>
+                        <tr>
+                            <th>Q</th>
+                            <th>Question</th>
+                            <th>Marks</th>
+                            <th>CO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="q-num">1</td>
+                            <td>
+                                <div class="mcq-text">Which layer of the OSI model does the IPv4 protocol primarily
+                                    operate at?</div>
+                                <div class="options" data-correct="B">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> Data
+                                        Link Layer</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> Network
+                                        Layer</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span>
+                                        Transport Layer</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span>
+                                        Application Layer</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: B — IPv4 operates at Layer 3 (Network Layer). It
+                                    handles logical addressing and routing.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">2</td>
+                            <td>
+                                <div class="mcq-text">RARP is used by a diskless workstation to find its:</div>
+                                <div class="options" data-correct="C">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> MAC
+                                        address from IP address</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> Domain
+                                        name from IP</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> IP
+                                        address from MAC address</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> Default
+                                        gateway address</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: C — RARP (Reverse ARP) maps MAC → IP. A diskless
+                                    workstation knows its MAC but not its IP address.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">3</td>
+                            <td>
+                                <div class="mcq-text">IPv6 addresses are how many bits long?</div>
+                                <div class="options" data-correct="D">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> 32 bits
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> 48 bits
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> 64 bits
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> 128
+                                        bits</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: D — IPv6 uses 128-bit addresses → 2¹²⁸ ≈ 340
+                                    undecillion unique addresses.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">4</td>
+                            <td>
+                                <div class="mcq-text">Which OSPF packet type is used for neighbor discovery on a
+                                    network?</div>
+                                <div class="options" data-correct="A">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> Hello
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> Update
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> Query
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> LSAck
+                                    </div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: A — OSPF Hello packets are sent on all OSPF-enabled
+                                    interfaces to discover and maintain neighbors (multicast 224.0.0.5).</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">5</td>
+                            <td>
+                                <div class="mcq-text">What is the loopback address in IPv4?</div>
+                                <div class="options" data-correct="C">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> 0.0.0.0
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span>
+                                        255.255.255.255</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span>
+                                        127.0.0.1</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span>
+                                        192.168.0.1</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: C — 127.0.0.1 is the loopback address. Packets sent
+                                    here never leave the host. Used to test the TCP/IP stack locally.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">6</td>
+                            <td>
+                                <div class="mcq-text">Well-known port numbers fall in which range?</div>
+                                <div class="options" data-correct="A">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> 0 –
+                                        1023</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> 1024 –
+                                        49151</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> 49152 –
+                                        65535</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> 0 – 255
+                                    </div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: A — 0–1023 are well-known ports assigned by IANA.
+                                    Examples: HTTP=80, HTTPS=443, FTP=21, SSH=22, DNS=53.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">7</td>
+                            <td>
+                                <div class="mcq-text">UDP minimum header size is:</div>
+                                <div class="options" data-correct="B">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> 4 bytes
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> 8 bytes
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> 20
+                                        bytes</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> 60
+                                        bytes</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: B — UDP header is exactly 8 bytes (fixed): Source
+                                    Port, Dest Port, Length, Checksum (2 bytes each).</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">8</td>
+                            <td>
+                                <div class="mcq-text">The persistent timer in TCP deals with which problem?</div>
+                                <div class="options" data-correct="D">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> Lost
+                                        SYN packets</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span>
+                                        Duplicate ACKs</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> TTL
+                                        expiration</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span>
+                                        Zero-window deadlock</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: D — Persistent Timer prevents deadlock when receiver
+                                    sends Window=0 (buffer full). If the window-update reply is lost, both sides wait
+                                    forever. Persistent timer sends probes periodically.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">9</td>
+                            <td>
+                                <div class="mcq-text">Which of the following is NOT a Distance Vector routing protocol?
+                                </div>
+                                <div class="options" data-correct="C">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> RIP
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> IGRP
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> OSPF
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> EGP
+                                    </div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: C — OSPF is a Link State protocol. RIP, IGRP, EGP are
+                                    all Distance Vector protocols.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">10</td>
+                            <td>
+                                <div class="mcq-text">In IPv6 QoS, the <strong>Flow Label</strong> field is how many
+                                    bits?</div>
+                                <div class="options" data-correct="B">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> 8 bits
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> 20 bits
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> 16 bits
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> 32 bits
+                                    </div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: B — IPv6 Flow Label is 20 bits. Traffic Class is 8
+                                    bits. Both are used for QoS in IPv6.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="section-label">Q2 — Scenario Based Questions (5 Marks Each)</div>
+
+                <div class="scenario-block">
+                    <div class="scenario-header">
+                        <span class="scode">Q2-A · Scenario: RIP vs OSPF + Routing Table</span>
+                        <span class="smarks">5 M | CO3</span>
+                    </div>
+                    <div class="scenario-title">🗺️ ISP Choosing a Routing Protocol</div>
+                    <div class="scenario-context">
+                        A large ISP has a network with 200 routers spread across India. Their current protocol RIP is
+                        causing slow convergence and routing loops during link failures. The network team is considering
+                        switching to OSPF. Some routers are Cisco-only branches where EIGRP could also be used.
+                    </div>
+                    <div class="scenario-qs">
+                        <ol>
+                            <li>Why is <strong>RIP unsuitable</strong> for a 200-router network? Give two specific
+                                reasons.</li>
+                            <li>How does <strong>OSPF</strong> achieve faster convergence than RIP? Explain the role of
+                                LSA flooding.</li>
+                            <li>What is the maximum hop count limitation of RIP and why is it a problem here?</li>
+                            <li>For Cisco-only branches, why might <strong>EIGRP</strong> be preferred over OSPF?</li>
+                            <li>What metric does OSPF use to choose the best path, and how is it calculated?</li>
+                        </ol>
+                    </div>
+                    <button class="toggle-ans-btn" onclick="toggleAns(this)">▼ Show Model Answers</button>
+                    <div class="ans-section">
+                        <h4>✓ Model Answers</h4>
+                        <ol>
+                            <li><strong>RIP limitations for 200 routers:</strong> (1) Max hop count = 15 — any
+                                destination more than 15 hops away is unreachable, which is very likely in a 200-router
+                                network. (2) Slow convergence — RIP updates every 30 seconds; when a link fails, it
+                                takes minutes for all routers to learn the new topology (count-to-infinity problem can
+                                cause loops).</li>
+                            <li><strong>OSPF convergence:</strong> When a link changes, the affected router immediately
+                                floods an LSA (Link State Advertisement) to ALL other routers. Every router updates its
+                                topology database and reruns Dijkstra's SPF algorithm. This happens in seconds, not
+                                minutes. Unlike RIP, OSPF doesn't wait for a 30-second timer.</li>
+                            <li>RIP's max hop count is <strong>15</strong>. Hop count of 16 = infinity (unreachable). In
+                                a 200-router network spanning India, many paths will exceed 15 hops — those destinations
+                                will show as unreachable in RIP, which is unacceptable.</li>
+                            <li><strong>EIGRP advantages for Cisco:</strong> (1) Faster convergence using DUAL algorithm
+                                with pre-computed backup (Feasible Successor) routes. (2) Uses incremental updates —
+                                only sends changes, not full table. (3) Supports unequal-cost load balancing. However,
+                                EIGRP is Cisco-proprietary so it only works with Cisco hardware.</li>
+                            <li>OSPF uses <strong>cost</strong> as its metric, calculated as: Cost = Reference Bandwidth
+                                / Interface Bandwidth (typically 100 Mbps / actual bandwidth). Lower cost = better path.
+                                A 1 Gbps link has cost 1; a 10 Mbps link has cost 10. OSPF always prefers high-bandwidth
+                                paths.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="scenario-block">
+                    <div class="scenario-header">
+                        <span class="scode">Q2-B · Scenario: DNS + DHCP + ARP Chain</span>
+                        <span class="smarks">5 M | CO3+CO4</span>
+                    </div>
+                    <div class="scenario-title">🖥️ Laptop Connecting to a Website from Scratch</div>
+                    <div class="scenario-context">
+                        You just turned on your laptop and opened a browser to visit www.google.com. Your laptop has no
+                        IP address yet. Trace the complete sequence of network events that happen — from getting an IP
+                        address to receiving the webpage.
+                    </div>
+                    <div class="scenario-qs">
+                        <ol>
+                            <li>Which protocol assigns your laptop an IP address? Describe the <strong>4-step
+                                    process</strong>.</li>
+                            <li>After getting an IP, you type www.google.com. Which protocol resolves this to an IP
+                                address?</li>
+                            <li>Before sending the packet to the router, which protocol is used to find the
+                                <strong>router's MAC address</strong>?</li>
+                            <li>Your laptop uses TCP to connect to Google's server. Which <strong>3 flags</strong> are
+                                exchanged during connection setup?</li>
+                            <li>Google's web server is using port 443. What category of port is this, and which protocol
+                                does it indicate?</li>
+                        </ol>
+                    </div>
+                    <button class="toggle-ans-btn" onclick="toggleAns(this)">▼ Show Model Answers</button>
+                    <div class="ans-section">
+                        <h4>✓ Model Answers</h4>
+                        <ol>
+                            <li><strong>DHCP (DORA):</strong> (1) Discover — laptop broadcasts from 0.0.0.0 to
+                                255.255.255.255 asking for IP. (2) Offer — DHCP server replies with an available IP,
+                                subnet mask, gateway, DNS. (3) Request — laptop broadcasts accepting the offered IP. (4)
+                                Acknowledge — DHCP server confirms; laptop now has its IP address.</li>
+                            <li><strong>DNS (Domain Name System)</strong> resolves www.google.com → IP. Laptop sends a
+                                DNS query (UDP port 53) to the DNS server. The DNS server looks up and returns Google's
+                                IP address (e.g., 142.250.80.100).</li>
+                            <li><strong>ARP (Address Resolution Protocol).</strong> Since Google's IP is outside the
+                                local network, the packet must go to the default gateway (router). Laptop broadcasts an
+                                ARP Request: "Who has 192.168.0.1?" Router replies with its MAC address. Laptop sends
+                                the packet to that MAC.</li>
+                            <li><strong>3-way handshake flags:</strong> (1) SYN — client sends (I want to connect, my
+                                seq = X). (2) SYN-ACK — server sends (OK, seq = Y, ACK = X+1). (3) ACK — client sends
+                                (ACK = Y+1, connection ready).</li>
+                            <li>Port 443 is a <strong>Well-Known Port</strong> (range 0–1023), assigned by IANA. It
+                                indicates <strong>HTTPS</strong> (HTTP Secure) — encrypted web traffic using TLS/SSL
+                                over TCP.</li>
+                        </ol>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="score-card" id="scoreCard3"></div>
+            <div class="paper-footer">
+                <span>23CSE2011 · Computer Networks · SET C</span>
+                <span>Page 1 of 1</span>
+                <span>★ ★ ★ ★ ★</span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--                        SET D (matches actual paper)      -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div class="paper-set" id="set4">
+        <div class="paper-wrap">
+
+            <div class="roll-row">Roll No.: <div class="roll-boxes">
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                    <div class="roll-box"></div>
+                </div>
+            </div>
+
+            <div class="paper-header">
+                <div class="uni-name">MIT School of Computing · MIT-ADT University, Pune</div>
+                <div class="exam-title">Term Assessment – II Examination April-2026</div>
+                <div class="meta-grid">
+                    <div class="meta-item"><span class="meta-label">Programme:</span><span
+                            class="meta-val">B.Tech</span></div>
+                    <div class="meta-item"><span class="meta-label">Year:</span><span class="meta-val">Second
+                            Year</span></div>
+                    <div class="meta-item"><span class="meta-label">Academic Year:</span><span
+                            class="meta-val">2025-26</span></div>
+                    <div class="meta-item"><span class="meta-label">Branch:</span><span class="meta-val">CSE</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Semester:</span><span class="meta-val">IV</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Max. Marks:</span><span class="meta-val">20</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Subject:</span><span class="meta-val">Computer
+                            Networks</span></div>
+                    <div class="meta-item"><span class="meta-label">Code:</span><span class="meta-val">23CSE2011</span>
+                    </div>
+                    <div class="meta-item"><span class="meta-label">Time:</span><span class="meta-val">01:30–2:30
+                            pm</span></div>
+                </div>
+                <div class="set-badge">SET D — Extended</div>
+                <div class="instructions"><strong>Instructions:</strong> All questions are compulsory. Neat diagrams
+                    must be drawn wherever necessary. Figures to the right indicate marks allotted.</div>
+            </div>
+
+            <div class="paper-body">
+                <div class="section-label">Q1 — Multiple Choice Questions (1 Mark Each) — Tricky / Application Level
+                </div>
+
+                <table class="q-table">
+                    <thead>
+                        <tr>
+                            <th>Q</th>
+                            <th>Question</th>
+                            <th>Marks</th>
+                            <th>CO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="q-num">1</td>
+                            <td>
+                                <div class="mcq-text">A packet with TTL = 1 reaches a router. What does the router do?
+                                </div>
+                                <div class="options" data-correct="C">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span>
+                                        Forwards the packet normally</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> Resets
+                                        TTL to 255 and forwards</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span>
+                                        Decrements TTL to 0, drops the packet, sends ICMP Time Exceeded</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> Sends
+                                        the packet to the default gateway</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: C — Router decrements TTL by 1 (to 0), drops the
+                                    packet, and sends ICMP Type 11 (Time Exceeded) to the source. This is how traceroute
+                                    works!</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">2</td>
+                            <td>
+                                <div class="mcq-text">Which of these is a valid Class C IP address?</div>
+                                <div class="options" data-correct="D">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span>
+                                        10.5.6.7</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span>
+                                        172.20.5.3</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span>
+                                        191.255.0.1</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span>
+                                        200.100.50.25</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: D — Class C starts from 192.0.0.0 to 223.255.255.255.
+                                    200.x is Class C. 10.x = Class A, 172.x = Class B, 191.x = Class B (128–191).</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">3</td>
+                            <td>
+                                <div class="mcq-text">ARP spoofing is an attack that exploits which vulnerability?</div>
+                                <div class="options" data-correct="B">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> ARP
+                                        uses TCP which can be hijacked</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> ARP has
+                                        no authentication — any device can send fake ARP replies</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> ARP
+                                        packets are encrypted and can be decoded</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> ARP
+                                        uses the same port as DHCP</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: B — Standard ARP has zero authentication. An attacker
+                                    can broadcast fake ARP replies mapping their MAC to another device's IP, poisoning
+                                    ARP caches and enabling man-in-the-middle attacks.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">4</td>
+                            <td>
+                                <div class="mcq-text">What is the purpose of the MSS (Maximum Segment Size) TCP option?
+                                </div>
+                                <div class="options" data-correct="A">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> Tells
+                                        the other side the largest segment it is willing to receive, preventing
+                                        fragmentation</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> Limits
+                                        the number of simultaneous TCP connections</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> Sets
+                                        the maximum speed of data transfer</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span>
+                                        Determines the timeout period for retransmission</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: A — MSS is negotiated during the 3-way handshake. It
+                                    prevents IP fragmentation by ensuring TCP segments fit within the network's MTU.
+                                </div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">5</td>
+                            <td>
+                                <div class="mcq-text">In a leaky bucket scenario, if the bucket is full and a burst
+                                    arrives, what happens?</div>
+                                <div class="options" data-correct="C">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> All
+                                        burst packets are sent immediately</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> Tokens
+                                        are consumed at double rate</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> Excess
+                                        packets are dropped</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span>
+                                        Transmission rate is doubled temporarily</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: C — In Leaky Bucket, if the bucket (queue) is full,
+                                    incoming packets that can't fit are simply dropped. This is a key disadvantage vs
+                                    Token Bucket.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">6</td>
+                            <td>
+                                <div class="mcq-text">Which flag combination does the server send during the 3-way
+                                    handshake?</div>
+                                <div class="options" data-correct="B">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> SYN
+                                        only</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> SYN +
+                                        ACK</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> ACK +
+                                        FIN</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> RST +
+                                        ACK</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: B — Server's response in 3-way handshake is SYN-ACK:
+                                    acknowledges client's SYN (ACK flag) and sends its own sequence number (SYN flag).
+                                </div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">7</td>
+                            <td>
+                                <div class="mcq-text">Which of the following protocols uses UDP port 520?</div>
+                                <div class="options" data-correct="A">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> RIP
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> OSPF
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> DHCP
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> DNS
+                                    </div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: A — RIP uses UDP port 520. OSPF uses IP protocol 89
+                                    (not UDP/TCP). DHCP uses UDP 67/68. DNS uses UDP 53.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">8</td>
+                            <td>
+                                <div class="mcq-text">Selective Repeat ARQ buffers out-of-order correct frames at the:
+                                </div>
+                                <div class="options" data-correct="B">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> Sender
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span>
+                                        Receiver</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> Router
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> Both
+                                        sender and receiver</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: B — In Selective Repeat, the receiver buffers
+                                    correctly received out-of-order frames until the missing one is retransmitted and
+                                    delivered in order.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">9</td>
+                            <td>
+                                <div class="mcq-text">Which QoS mechanism uses RSVP to <em>reserve bandwidth</em> for an
+                                    application end-to-end?</div>
+                                <div class="options" data-correct="D">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span>
+                                        DiffServ</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span> ECN
+                                    </div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span> Token
+                                        Bucket</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> IntServ
+                                    </div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: D — IntServ (Integrated Services) uses RSVP (Resource
+                                    Reservation Protocol) to reserve bandwidth per-flow. DiffServ classifies/marks
+                                    packets. ECN signals congestion without dropping packets.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO3</td>
+                        </tr>
+
+                        <tr>
+                            <td class="q-num">10</td>
+                            <td>
+                                <div class="mcq-text">A TCP server calls <code>select()</code> to handle both TCP and
+                                    UDP simultaneously. What is the purpose of <code>select()</code>?</div>
+                                <div class="options" data-correct="C">
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">A.</span> Creates
+                                        a new socket for each client</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">B.</span>
+                                        Converts UDP sockets to TCP sockets</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">C.</span>
+                                        Monitors multiple sockets and wakes the process when any is ready</div>
+                                    <div class="opt" onclick="selectOpt(this)"><span class="opt-label">D.</span> Selects
+                                        the fastest available network interface</div>
+                                </div>
+                                <div class="ans-reveal">✓ Answer: C — select() allows a single-threaded server to
+                                    monitor multiple sockets (both TCP and UDP) simultaneously. It blocks until at least
+                                    one socket is ready for I/O, then the server handles whichever is ready.</div>
+                            </td>
+                            <td class="q-marks">1 M</td>
+                            <td class="q-co">CO4</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="section-label">Q2 — Scenario Based Questions (5 Marks Each)</div>
+
+                <div class="scenario-block">
+                    <div class="scenario-header">
+                        <span class="scode">Q2-A · Scenario: Packet Delivery + ARP + DHCP + OSPF (mirrors real
+                            paper)</span>
+                        <span class="smarks">5 M | CO3</span>
+                    </div>
+                    <div class="scenario-title">🌐 Host Sending Data Outside Its Network</div>
+                    <div class="scenario-context">
+                        A newly connected laptop in an office network wants to send data to a web server located outside
+                        its network. The laptop has no IP address yet. The office uses OSPF for routing between routers,
+                        and the packet must cross 3 routers to reach the server. The packet size is 3000 bytes but the
+                        first link has MTU = 1500 bytes.
+                    </div>
+                    <div class="scenario-qs">
+                        <ol>
+                            <li>How does the laptop get its IP address? Name the protocol and describe it in <strong>4
+                                    steps</strong>.</li>
+                            <li>What role does <strong>ARP</strong> play before the laptop sends the first packet?</li>
+                            <li>The 3000-byte packet must cross an MTU-1500 link. What happens? How many fragments are
+                                created?</li>
+                            <li>What happens if TTL becomes zero at a router before the packet reaches its destination?
+                            </li>
+                            <li>Why is <strong>OSPF preferred over RIP</strong> for this multi-router network?</li>
+                        </ol>
+                    </div>
+                    <button class="toggle-ans-btn" onclick="toggleAns(this)">▼ Show Model Answers</button>
+                    <div class="ans-section">
+                        <h4>✓ Model Answers</h4>
+                        <ol>
+                            <li><strong>DHCP — DORA process:</strong> (1) Discover: Laptop broadcasts from 0.0.0.0 to
+                                255.255.255.255 requesting an IP. (2) Offer: DHCP server responds with an available IP
+                                address, subnet mask, gateway, DNS. (3) Request: Laptop broadcasts to confirm it accepts
+                                the offered IP. (4) Acknowledge: Server sends DHCPACK confirming the assignment. Laptop
+                                now has a valid IP.</li>
+                            <li><strong>ARP's role:</strong> The web server is outside the laptop's network, so the
+                                packet must go to the default gateway (router). ARP is used to find the router's MAC
+                                address. Laptop broadcasts "Who has IP 192.168.0.1?" (router's IP). Router replies with
+                                its MAC. Laptop then sends the IP packet wrapped in an Ethernet frame addressed to the
+                                router's MAC.</li>
+                            <li><strong>Fragmentation:</strong> Header = 20 bytes, so payload per fragment = 1500 − 20 =
+                                1480 bytes. Data = 3000 − 20 = 2980 bytes. Fragment 1: 1480 bytes data (offset=0, MF=1).
+                                Fragment 2: 1480 bytes data (offset=185, MF=1). Fragment 3: 20 bytes data (offset=370,
+                                MF=0). <strong>3 fragments</strong> total. All share same Identifier field.</li>
+                            <li>If TTL = 0, the router <strong>drops the packet</strong> and sends an <strong>ICMP Time
+                                    Exceeded</strong> message (Type 11) back to the laptop's IP address. The message
+                                reports which router discarded it. The laptop knows the packet didn't reach its
+                                destination.</li>
+                            <li><strong>OSPF vs RIP:</strong> (1) OSPF has no hop count limit; RIP max = 15 hops. (2)
+                                OSPF converges in seconds via immediate LSA flooding; RIP takes minutes with 30-second
+                                update cycles. (3) OSPF uses bandwidth-based cost; RIP only counts hops — a slow 56kbps
+                                link costs the same as 1Gbps. (4) OSPF is more scalable for enterprise networks.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="scenario-block">
+                    <div class="scenario-header">
+                        <span class="scode">Q2-B · Scenario: TCP Reliability — Online Banking (mirrors real
+                            paper)</span>
+                        <span class="smarks">5 M | CO3+CO4</span>
+                    </div>
+                    <div class="scenario-title">🏦 Online Banking with TCP</div>
+                    <div class="scenario-context">
+                        An online banking application uses TCP to ensure secure and reliable money transfers. During
+                        peak hours, some packets are delayed and occasionally lost. However, the system still ensures
+                        that every transaction completes correctly and in the right order.
+                    </div>
+                    <div class="scenario-qs">
+                        <ol>
+                            <li>Why is <strong>TCP preferred over UDP</strong> for banking transactions? Give at least 3
+                                reasons.</li>
+                            <li>Explain the role of <strong>sequence numbers and acknowledgments</strong> in ensuring
+                                reliable delivery.</li>
+                            <li>How does TCP handle a <strong>lost packet</strong>? Describe the mechanism step by step.
+                            </li>
+                            <li>Which TCP flags are used during <strong>connection establishment</strong>? Name and
+                                explain each.</li>
+                            <li>Name any <strong>two TCP-based applications</strong> besides banking that require
+                                reliability.</li>
+                        </ol>
+                    </div>
+                    <button class="toggle-ans-btn" onclick="toggleAns(this)">▼ Show Model Answers</button>
+                    <div class="ans-section">
+                        <h4>✓ Model Answers</h4>
+                        <ol>
+                            <li><strong>TCP preferred for banking:</strong> (1) Reliability: TCP guarantees every byte
+                                arrives via ACKs and retransmission — a lost ₹10,000 transfer packet cannot just
+                                disappear. (2) Ordering: TCP sequence numbers ensure transactions arrive in the exact
+                                order sent — important for debit then credit operations. (3) Error checking: Checksum on
+                                every segment. (4) Flow + Congestion control: Prevents overloading the server. UDP has
+                                none of these.</li>
+                            <li><strong>Sequence Numbers + ACKs:</strong> Sender assigns a sequence number to each byte.
+                                The receiver's ACK number tells the sender "I've received up to byte X, send me X+1
+                                next." If ACK for byte X doesn't arrive within the retransmission timeout, the sender
+                                retransmits from byte X. This ensures no data is silently lost.</li>
+                            <li><strong>Handling packet loss:</strong> (1) Sender transmits segment with sequence number
+                                X. (2) Retransmission timer starts. (3) If no ACK arrives before timeout → packet is
+                                assumed lost. (4) Sender retransmits the same segment. (5) Alternatively, if receiver
+                                sends 3 duplicate ACKs for byte X → fast retransmit (sender retransmits X immediately
+                                without waiting for timeout). (6) ssthresh = CWND/2, CWND resets, congestion control
+                                adjusts.</li>
+                            <li><strong>Connection establishment flags:</strong> (1) SYN (Synchronize) — Client sends to
+                                initiate connection and share its initial sequence number. (2) SYN-ACK — Server
+                                responds, acknowledging client's SYN and sending its own ISN. (3) ACK (Acknowledgment) —
+                                Client confirms receipt of server's SYN. Connection is now established. The FIN flag is
+                                used for termination, not establishment.</li>
+                            <li><strong>Two TCP-based applications:</strong> (1) HTTPS/HTTP (web browsing) — web pages
+                                must load completely and in order. (2) FTP (File Transfer Protocol) — files must arrive
+                                completely without corruption. Others: SMTP (email), SSH (secure shell), database
+                                queries.</li>
+                        </ol>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="score-card" id="scoreCard4"></div>
+            <div class="paper-footer">
+                <span>23CSE2011 · Computer Networks · SET D</span>
+                <span>Page 1 of 1</span>
+                <span>★ ★ ★ ★ ★</span>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        let currentSet = 1;
+        let answersShown = false;
+        const scores = { 1: 0, 2: 0, 3: 0, 4: 0 };
+        const answered = { 1: new Set(), 2: new Set(), 3: new Set(), 4: new Set() };
+
+        function showSet(n) {
+            currentSet = n;
+            document.querySelectorAll('.paper-set').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('set' + n).classList.add('active');
+            document.querySelectorAll('.set-btn')[n - 1].classList.add('active');
+            updateScoreDisplay();
+        }
+
+        function selectOpt(el) {
+            const group = el.closest('.options');
+            if (!group) return;
+
+            // Find which question row this belongs to
+            const row = el.closest('tr');
+            const qNum = row ? row.querySelector('.q-num').textContent.trim() : 'x';
+            const setId = currentSet;
+            const questionKey = setId + '_' + qNum;
+
+            // Don't allow re-answering if answers shown
+            if (answersShown) return;
+            // Don't re-answer if already answered
+            if (answered[setId].has(questionKey)) return;
+
+            const correct = group.dataset.correct;
+            const opts = group.querySelectorAll('.opt');
+            const labels = ['A', 'B', 'C', 'D'];
+            const selectedLabel = el.querySelector('.opt-label').textContent.trim().replace('.', '');
+
+            // Mark
+            opts.forEach((o, i) => {
+                o.style.pointerEvents = 'none';
+                if (labels[i] === correct) o.classList.add('correct');
+            });
+
+            if (selectedLabel === correct) {
+                el.classList.add('correct');
+                scores[setId]++;
+            } else {
+                el.classList.add('wrong');
+            }
+
+            answered[setId].add(questionKey);
+            updateScoreDisplay();
+            updateScoreCard();
+        }
+
+        function updateScoreDisplay() {
+            const s = scores[currentSet];
+            const a = answered[currentSet].size;
+            document.getElementById('scoreDisplay').textContent = `MCQ: ${s}/${a} answered`;
+        }
+
+        function updateScoreCard() {
+            const card = document.getElementById('scoreCard' + currentSet);
+            if (!card) return;
+            const s = scores[currentSet];
+            const a = answered[currentSet].size;
+            if (a > 0) {
+                card.classList.add('show');
+                card.innerHTML = `<div class="score-num">${s} / ${a}</div><div class="score-sub">MCQ SCORE (answered so far)</div>`;
+            }
+        }
+
+        function toggleAllAnswers() {
+            answersShown = !answersShown;
+            document.querySelectorAll('.ans-reveal').forEach(el => {
+                el.classList.toggle('show', answersShown);
+            });
+            document.querySelectorAll('.ans-section').forEach(el => {
+                el.classList.toggle('show', answersShown);
+            });
+            if (answersShown) {
+                // Also show all correct options
+                document.querySelectorAll('.options').forEach(group => {
+                    const correct = group.dataset.correct;
+                    const labels = ['A', 'B', 'C', 'D'];
+                    group.querySelectorAll('.opt').forEach((o, i) => {
+                        if (labels[i] === correct) o.classList.add('correct');
+                        o.style.pointerEvents = 'none';
+                    });
+                });
+            }
+            document.querySelector('.show-ans-btn').textContent = answersShown ? 'Hide Answers' : 'Show All Answers';
+        }
+
+        function toggleAns(btn) {
+            const ans = btn.nextElementSibling;
+            const showing = ans.classList.toggle('show');
+            btn.textContent = showing ? '▲ Hide Answers' : '▼ Show Model Answers';
+        }
+    </script>
+
+</body>
+
+</html>
